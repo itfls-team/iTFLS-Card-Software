@@ -1,2 +1,2 @@
 # iTFLS-Card-Software
-Software of iTFLS card reader.
+iTFLS快速支付系统软件部分
