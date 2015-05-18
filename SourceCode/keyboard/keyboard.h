@@ -1,3 +1,6 @@
-#include "../common/common.h"
+/**
+ * 路径及文件名：  /SourceCode/keyboard/keyboard.h
+ * 说明：          引用公共头文件。
+ */
 
-unsigned char* getKeyNumber (void);
+#include "../common/common.h"

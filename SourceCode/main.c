@@ -1,23 +1,27 @@
 /**
- * 支持的芯片：{STC89C52RC} + {LCD1602}
- * 晶振频率：  22.1184MHz
+ * 路径及文件名：  /SourceCode/main.c
+ * 说明：          主函数文件。
+ * 函数列表：      void main(main)
  */
 
 #include "common/common.h"
-#include "lcd1602/lcd1602.h"
-#include "keyboard/keyboard.h"
 
 void main(void)
 {
+    extern void lcd1602Backlight(bit status);
+    extern void lcd1602Display(unsigned char line, unsigned char row, unsigned char *content, unsigned char contentLenth);
+    extern void lcd1602Init(void);
+    extern unsigned char* keyboardGetKey(void);
+
     unsigned char* keyNumber;
 
-    lcdInit();
+    lcd1602Init();
+    lcd1602Backlight(LCD1602_STATUS_BACKLIGHT_ON);
 
     while (1) {
-        keyNumber = getKeyNumber();
+        keyNumber = keyboardGetKey();
         if (keyNumber != NULL) {
-//            append(numbers, keyNumber, 6);
-            display1602(1, 9, keyNumber, 1);
+            lcd1602Display(1, 1, keyNumber, 1);
         }
     }
 }

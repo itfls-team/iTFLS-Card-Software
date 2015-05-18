@@ -1,6 +1,12 @@
+/**
+ * 路径及文件名：  /SourceCode/keyboard/keyboard.c
+ * 说明：          定义有关键盘的函数。
+ * 函数列表：      extern unsigned char* keyboardGetKey(void)
+ */
+
 #include "keyboard.h"
 
-unsigned char* getKeyNumber(void)
+extern unsigned char* keyboardGetKey(void)
 {
     unsigned char code rowScanTable[4] = {
         0xFE,
@@ -25,18 +31,18 @@ unsigned char* getKeyNumber(void)
                     line;
 
     for (row = 0; row <= 3; row++) {
-        P3 = rowScanTable[row];
-        keyScanTemp = P3 & 0xF0;
+        KEYBOARD_PORT_SCAN = rowScanTable[row];
+        keyScanTemp = KEYBOARD_PORT_SCAN & 0xF0;
 
         if (keyScanTemp != 0xF0) {
             delayMs(5);
-            keyScanTemp = P3 & 0xF0;
+            keyScanTemp = KEYBOARD_PORT_SCAN & 0xF0;
 
             if (keyScanTemp != 0xF0) {
                 for (line = 0; line <= 2; line++) {
                     if (keyScanTemp == lineScanTable[line]) {
                         while (1) {
-                            keyScanTemp = P3 & 0xF0;
+                            keyScanTemp = KEYBOARD_PORT_SCAN & 0xF0;
                             if (keyScanTemp == 0xF0) {
                                 break;
                             }
