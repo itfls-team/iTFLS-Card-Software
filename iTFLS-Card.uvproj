@@ -391,12 +391,17 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>main</GroupName>
+          <GroupName>main&amp;config</GroupName>
           <Files>
             <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\SourceCode\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>config.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\SourceCode\config.h</FilePath>
             </File>
           </Files>
         </Group>
