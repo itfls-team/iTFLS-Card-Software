@@ -1,11 +1,11 @@
+/**
+ * 路径及文件名：  /SourceCode/lcd1602/lcd1602.h
+ * 说明：          引用公共头文件，定义操作1602液晶时的电平。
+ */
+
 #include "../common/common.h"
 
-#define LCD_DATA_REGISTER       1
-#define LCD_COMMAND_REGISTER    0
-#define LCD_READ                1
-#define LCD_WRITE               0
-#define LCD_HIGH                1
-#define LCD_LOW                 0
-
-void display1602 (unsigned char line, unsigned char row, unsigned char *dataParameter, unsigned char lenth);
-void lcdInit     (void);
+#define LCD1602_DATA_REGISTER       HIGH
+#define LCD1602_COMMAND_REGISTER    LOW
+#define LCD1602_READ                HIGH
+#define LCD1602_WRITE               LOW

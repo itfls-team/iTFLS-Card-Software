@@ -1,6 +1,14 @@
+/**
+ * 路径及文件名：  /SourceCode/common/common.c
+ * 说明：          定义所有的公共函数。
+ * 函数列表：      extern void delayMs(unsigned int ms)
+ *                 extern void delayNop(void)
+ */
+
 #include "../common/common.h"
 
-void delayMs(unsigned int ms){ //误差：每毫秒-0.1085微秒
+extern void delayMs(unsigned int ms) //误差：每毫秒约-0.1085微秒
+{
     unsigned char a,b,c;
     
     while (ms--) {
@@ -14,7 +22,7 @@ void delayMs(unsigned int ms){ //误差：每毫秒-0.1085微秒
     }
 }
 
-void delayNop()
+extern void delayNop(void)
 {
     _nop_();
     _nop_();
@@ -26,8 +34,8 @@ void delayNop()
     _nop_();
     _nop_();
 }
-
-void append(unsigned char* string, unsigned char character, unsigned int lenth)
+/*拼接字符函数，待用
+extern void append(unsigned char* string, unsigned char character, unsigned int lenth)
 {
 	int digit;
 	
@@ -44,3 +52,4 @@ void append(unsigned char* string, unsigned char character, unsigned int lenth)
 	}
 	string[lenth - 1] = character;
 }
+*/

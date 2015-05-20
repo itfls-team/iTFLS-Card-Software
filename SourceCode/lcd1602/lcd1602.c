@@ -1,86 +1,117 @@
+/**
+ * 路径及文件名：  /SourceCode/lcd1602/lcd1602.c
+ * 说明：          定义有关1602液晶操作的函数。
+ * 函数列表：      extern void lcd1602Clear(void)
+ *                 extern void lcd1602Init(void)
+ *                 extern void lcd1602Display(
+ *                     unsigned char line,
+ *                     unsigned char row,
+ *                     unsigned char* content,
+ *                 )
+ *                 extern void lcd1602Backlight(bit status)
+ *                 static void lcd1602WaitBusy(void)
+ *                 static void lcd1602WriteCommand(unsigned char lcd1602Command, bit waitBusy)
+ *                 static void lcd1602WriteData(unsigned char lcd1602Data)
+ */
+ 
 #include "lcd1602.h"
 
-//sbit lcdBacklight   = P2^3;
-sbit lcdRegister = P1^0;//P2^0;
-sbit lcdReadWrite = P1^1;
-sbit lcdEnable = P2^5;
+#if LCD1602_FUNCTION_BACKLIGHT
+sbit lcd1602BacklightSwitch =   LCD1602_PIN_BACKLIGHT;
+#endif
+sbit lcd1602Enable          =   LCD1602_PIN_ENABLE;
+sbit lcd1602ReadWrite       =   LCD1602_PIN_READWRITE;
+sbit lcd1602Register        =   LCD1602_PIN_REGISTER;
 
-static void lcdWriteCommand (unsigned char lcdCommand, bit waitBusy);
-static void lcdWriteData    (unsigned char lcdData);
+static void lcd1602WaitBusy(void);
+static void lcd1602WriteCommand(unsigned char lcd1602Command, bit waitBusy);
+static void lcd1602WriteData(unsigned char lcd1602Data);
 
-static void lcdWaitBusy()
+#if LCD1602_FUNCTION_BACKLIGHT
+extern void lcd1602Backlight(bit status)
+{
+    lcd1602BacklightSwitch = status;
+}
+#endif
+
+extern void lcd1602Clear(void)
+{
+    lcd1602WriteCommand(0x01, 1);
+}
+
+extern void lcd1602Display(
+    unsigned char line,
+    unsigned char row,
+    unsigned char* content
+) {
+    unsigned char* contentCopy = content;
+    unsigned char address = (line == 1 ? 0x80 : 0xC0) + 0x01 * (row - 1);
+    unsigned char maxContentLenth = 16;
+
+	lcd1602WriteCommand(address, 1);
+	while (maxContentLenth--) {
+        if (*contentCopy == '\0') {
+            return;
+        }
+        lcd1602WriteData(*contentCopy);
+        contentCopy++;
+    }
+}
+
+extern void lcd1602Init(void)
+{
+    delayMs(15);
+    lcd1602WriteCommand(0x38, 0);
+    delayMs(5);
+    lcd1602WriteCommand(0x38, 0);
+    delayMs(5);
+    lcd1602WriteCommand(0x38, 0);
+    delayMs(5);
+    lcd1602WriteCommand(0x38, 1);
+    delayMs(5);
+    lcd1602WriteCommand(0x0c, 1);
+    delayMs(5);
+    lcd1602WriteCommand(0x06, 1);
+    delayMs(5);
+    lcd1602WriteCommand(0x01, 1);
+    delayMs(5);
+}
+
+static void lcd1602WaitBusy(void)
 {
     bit isLcdBusy;
     isLcdBusy = 1;
     while (isLcdBusy) {
-        lcdRegister = LCD_COMMAND_REGISTER;
-        lcdReadWrite = LCD_READ;
-        lcdEnable = LCD_HIGH;
-        isLcdBusy = (bit)(P0 & 0x80);
+        lcd1602Register = LCD1602_COMMAND_REGISTER;
+        lcd1602ReadWrite = LCD1602_READ;
+        lcd1602Enable = HIGH;
+        isLcdBusy = (bit)(LCD1602_PORT_BUS & 0x80);
         delayNop();
     }
-    lcdEnable = LCD_LOW;
+    lcd1602Enable = LOW;
 }
 
-static void lcdWriteCommand(unsigned char lcdCommand, bit waitBusy)
+static void lcd1602WriteCommand(unsigned char lcd1602Command, bit waitBusy)
 {
     if (waitBusy) {
-        lcdWaitBusy();
+        lcd1602WaitBusy();
     }
 
-    lcdRegister = LCD_COMMAND_REGISTER;
-    lcdReadWrite = LCD_WRITE;
-    lcdEnable = LCD_HIGH;
-    P0 = lcdCommand;
+    lcd1602Register = LCD1602_COMMAND_REGISTER;
+    lcd1602ReadWrite = LCD1602_WRITE;
+    lcd1602Enable = HIGH;
+    LCD1602_PORT_BUS = lcd1602Command;
     delayNop();
-    lcdEnable = LCD_LOW;
+    lcd1602Enable = LOW;
 }
 
-static void lcdWriteData(unsigned char lcdData)
+static void lcd1602WriteData(unsigned char lcd1602Data)
 {
-    lcdWaitBusy();
-    lcdRegister = LCD_DATA_REGISTER;
-    lcdReadWrite = LCD_WRITE;
-    lcdEnable = LCD_HIGH;
-    P0 = lcdData;
+    lcd1602WaitBusy();
+    lcd1602Register = LCD1602_DATA_REGISTER;
+    lcd1602ReadWrite = LCD1602_WRITE;
+    lcd1602Enable = HIGH;
+    LCD1602_PORT_BUS = lcd1602Data;
     delayNop();
-    lcdEnable = LCD_LOW;
-}
-
-void lcdInit(void)
-{
-    delayMs(15);
-    lcdWriteCommand(0x38, 0);
-    delayMs(5);
-    lcdWriteCommand(0x38, 0);
-    delayMs(5);
-    lcdWriteCommand(0x38, 0);
-    delayMs(5);
-    lcdWriteCommand(0x38, 1);
-    delayMs(5);
-    lcdWriteCommand(0x0c, 1);
-    delayMs(5);
-    lcdWriteCommand(0x06, 1);
-    delayMs(5);
-    lcdWriteCommand(0x01, 1);
-    delayMs(5);
-}
-
-void display1602(
-    unsigned char line,
-    unsigned char row,
-    unsigned char *dataParameter,
-    unsigned char lenth
-) {
-    unsigned char *lcdData = dataParameter;
-    unsigned char address = (line == 1 ? 0x80 : 0xC0) + 0x01 * (row - 1);
-    
-    if (lenth > 16) {
-        lenth = 16;
-    }
-
-	lcdWriteCommand(address, 1);
-	while (lenth--)	{
-        lcdWriteData(*lcdData++);
-    }
+    lcd1602Enable = LOW;
 }
