@@ -1,15 +1,14 @@
 /**
  * 路径及文件名：  /SourceCode/lcd1602/lcd1602.c
  * 说明：          定义有关1602液晶操作的函数。
- * 函数列表：      extern void lcd1602Init(void)
+ * 函数列表：      extern void lcd1602Clear(void)
+ *                 extern void lcd1602Init(void)
  *                 extern void lcd1602Display(
  *                     unsigned char line,
  *                     unsigned char row,
- *                     unsigned char *content,
- *                     unsigned char contentLenth
+ *                     unsigned char* content,
  *                 )
  *                 extern void lcd1602Backlight(bit status)
- *                 extern void lcd1602Init(void)
  *                 static void lcd1602WaitBusy(void)
  *                 static void lcd1602WriteCommand(unsigned char lcd1602Command, bit waitBusy)
  *                 static void lcd1602WriteData(unsigned char lcd1602Data)
@@ -35,22 +34,27 @@ extern void lcd1602Backlight(bit status)
 }
 #endif
 
+extern void lcd1602Clear(void)
+{
+    lcd1602WriteCommand(0x01, 1);
+}
+
 extern void lcd1602Display(
     unsigned char line,
     unsigned char row,
-    unsigned char *content,
-    unsigned char contentLenth
+    unsigned char* content
 ) {
-    unsigned char *contentCopy = content;
+    unsigned char* contentCopy = content;
     unsigned char address = (line == 1 ? 0x80 : 0xC0) + 0x01 * (row - 1);
-    
-    if (contentLenth > 16) {
-        contentLenth = 16;
-    }
+    unsigned char maxContentLenth = 16;
 
 	lcd1602WriteCommand(address, 1);
-	while (contentLenth--)	{
-        lcd1602WriteData(*contentCopy++);
+	while (maxContentLenth--) {
+        if (*contentCopy == '\0') {
+            return;
+        }
+        lcd1602WriteData(*contentCopy);
+        contentCopy++;
     }
 }
 
