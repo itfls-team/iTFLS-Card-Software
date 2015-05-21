@@ -12,10 +12,11 @@ void main(void)
     extern void lcd1602Display(unsigned char line, unsigned char row, unsigned char* content);
     extern void lcd1602Init(void);
     extern unsigned char keyboardGetKey(void);
-    extern char* keyboardToString(unsigned char scanCode);
-    extern void lcd1602RollRight(void);
+    extern unsigned char* keyboardToString(unsigned char scanCode);
     extern void lcd1602Clear(void);
-    extern void lcd1602WriteCommand(unsigned char lcd1602Command, bit waitBusy);
+    extern void serialPortInit(void);
+    extern void serialPortTransmit(unsigned char* dataToTransmit);
+    extern unsigned char* serialPortReceive(void);
 
     unsigned char keyCode = 0xFF,
                   price[7],
@@ -24,6 +25,8 @@ void main(void)
     bit hasDot = 0;
 
     lcd1602Init();
+    serialPortInit();
+    EA = 1;
     price[0] = '\0';
     
     #if LCD1602_FUNCTION_BACKLIGHT
@@ -34,7 +37,11 @@ void main(void)
         keyCode = keyboardGetKey();
         if (keyCode != 0xFF) {
             if (keyCode == 0x0B) {
+                unsigned char priceJsonString[20];
+                sprintf(priceJsonString, "{\"price\":\"%s\"}\n", price);
                 lcd1602Clear();
+                serialPortTransmit(priceJsonString);
+                lcd1602Display(1,1,serialPortReceive());
                 hasDot = 0;
                 digitOfDecimalPart = 0;
                 digitOfIntegerPart = 0;
@@ -60,6 +67,7 @@ void main(void)
                     }
                 }
 
+                lcd1602Clear();
                 lcd1602Display(1, 1, price);
             }
         }
