@@ -6,6 +6,7 @@
 #include <STC89C5xRC.H>
 #include <intrins.h>
 #include <string.h>
+#include <stdio.h>
 #include "../config.h"
 
 extern void delayMs(unsigned int ms);
