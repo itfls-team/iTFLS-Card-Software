@@ -2,7 +2,7 @@
  * 路径及文件名：  /SourceCode/keyboard/keyboard.c
  * 说明：          定义有关键盘的函数。
  * 函数列表：      extern unsigned char keyboardGetKey(void)
- *                 extern char* keyboardToString(unsigned char scanCode)
+ *                 extern unsigned char* keyboardToString(unsigned char scanCode)
  */
 
 #include "keyboard.h"
@@ -59,7 +59,7 @@ extern unsigned char keyboardGetKey(void)
     return 0xFF;
 }
 
-extern char* keyboardToString(unsigned char scanCode)
+extern unsigned char* keyboardToString(unsigned char scanCode)
 {
     char code keyboardStringTable[4][3][2] = {
         {"1","2","3"},
