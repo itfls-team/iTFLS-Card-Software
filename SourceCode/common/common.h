@@ -7,6 +7,8 @@
 #include <intrins.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <absacc.h>
 #include "../config.h"
 
 extern void delayMs(unsigned int ms);
