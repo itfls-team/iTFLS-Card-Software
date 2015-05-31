@@ -420,6 +420,56 @@
             </File>
           </Files>
         </Group>
+        <Group>
+          <GroupName>serialPort</GroupName>
+          <Files>
+            <File>
+              <FileName>serialPort.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SourceCode\serialPort\serialPort.c</FilePath>
+            </File>
+            <File>
+              <FileName>serialPort.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\SourceCode\serialPort\serialPort.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>MFRC500</GroupName>
+          <Files>
+            <File>
+              <FileName>MFRC500.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SourceCode\MFRC500\MFRC500.c</FilePath>
+            </File>
+            <File>
+              <FileName>MFRC500.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\SourceCode\MFRC500\MFRC500.h</FilePath>
+            </File>
+            <File>
+              <FileName>MFRC500Functions.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SourceCode\MFRC500\MFRC500Functions.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>buzzer</GroupName>
+          <Files>
+            <File>
+              <FileName>buzzer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\SourceCode\buzzer\buzzer.c</FilePath>
+            </File>
+            <File>
+              <FileName>buzzer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\SourceCode\buzzer\buzzer.h</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
   </Targets>
