@@ -3,13 +3,13 @@
  * 说明：          定义有关串口通讯的函数。
  * 函数列表：      extern void serialPortInit(void)
  *                 extern unsigned char* serialPortReceive(void)
- *                 extern void serialPortTransmit(unsigned char* dataToTransmit)
+ *                 extern void serialPortTransmit(unsigned char* dataToTransmit, bit isString, unsigned char dataLenth)
  *                 static void serialPortInterruptHandler(void) interrupt 4
  */
 
 #include "serialPort.h"
 
-unsigned char serialPortReceiverBuffer[32];
+unsigned char xdata serialPortReceiverBuffer[32];
 unsigned char* serialPortReceiverBufferPointer = serialPortReceiverBuffer;
 bit isSerialPortDataReceivedCompletely = 0;
 
@@ -35,22 +35,35 @@ extern unsigned char* serialPortReceive(void)
     return serialPortReceiverBuffer;
 }
 
-extern void serialPortTransmit(unsigned char* dataToTransmit)
+extern void serialPortTransmit(unsigned char* dataToTransmit, bit isString, unsigned char dataLenth)
 {
-    unsigned char maxDataLenth = 32;
     unsigned char* dataCopy = dataToTransmit;
     
-    while (maxDataLenth--) {
-        if (*dataCopy == '\0') {
-            return;
+    if (isString) {
+        dataLenth = 64;
+        while (dataLenth--) {
+            if (*dataCopy == '\0') {
+                return;
+            }
+            SBUF = *dataCopy;
+            dataCopy++;
+            while (!TI) {
+                ;
+            }
+            TI = 0;
         }
-        SBUF = *dataCopy;
-        dataCopy++;
-        while (!TI) {
-            ;
+    } else {
+        while (dataLenth--) {
+            SBUF = *dataCopy;
+            dataCopy++;
+            while (!TI) {
+                ;
+            }
+            TI = 0;
         }
-        TI = 0;
     }
+    
+
 }
 
 static void serialPortInterruptHandler(void) interrupt 4
